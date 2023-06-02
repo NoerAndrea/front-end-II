@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Rick and Morty API</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <nav>
+    <img id="logo" src="./image/logo Rick and Morty.png" alt="Logo Rick and Morty">
+  </nav>
+  <main>
+    <section>
+      <h1>API de Rick and Morty</h1>
+      <div id="search-container">
+        <input type="text" id="search-input" placeholder="Pesquise">
+        <span class="search-icon">&#128269;</span>
+      </div>
+    </section>
+    <!--imagens -->
+
+    <section>
+      <div id="cards">
+        <div id="characters"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+
+    window.onload = function () {
+      fetchCharacters(name);
+    }
+
+    const searchInput = window.document.getElementById('search-input');
+
+    const page = 1;
+
+
+    function fetchCharacters(name) {
+
+      let charactersContainer = document.getElementById('characters');
+      charactersContainer.innerHTML = "";
+
+      const url = `https://rickandmortyapi.com/api/character/?name=${name}`;
+
+      axios
+        .get(url, { params: { page } })
+        .then(response => {
+          const characters = response.data.results;
+          console.log(characters)
+
+          if (characters.length === 0) {
+            charactersContainer.textContent = 'Nenhum personagem encontrado.';
+          } else {
+            characters.forEach((character, index) => {
+
+              const characterDiv = document.createElement('card');
+              characterDiv.classList.add('card-container');
+
+              const name = document.createElement('h3');
+              const image = document.createElement('img');
+              const status = document.createElement('status');
+              const species = document.createElement('species');
+
+              // Inserindo propriedades
+              name.textContent = character.name;
+              image.src = character.image;
+              status.textContent = character.status;
+              species.textContent = character.species;
+
+              // Criando as divs
+              const imageDiv = document.createElement('div');
+              const contentDiv = document.createElement('div');
+              contentDiv.classList.add('div-character');
+
+              // Adicionando os elementos na estrutura correta
+              imageDiv.appendChild(image);
+              contentDiv.appendChild(name);
+              contentDiv.appendChild(status);
+              contentDiv.appendChild(species);
+
+              // Adicionando as divs na div principal
+              characterDiv.appendChild(imageDiv);
+              characterDiv.appendChild(contentDiv);
+
+              // Puxando a div principal para o container
+              charactersContainer.appendChild(characterDiv);
+
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const searchValue = searchInput.value;
+      fetchCharacters(searchValue);
+    });    
+  </script>
+</body>
+
+</html>
