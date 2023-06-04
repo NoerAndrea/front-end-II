@@ -11,86 +11,116 @@
     <img id="logo" src="./image/logo Rick and Morty.png" alt="Logo Rick and Morty">
   </nav>
   <main>
+    <!--titulo e pesquisa -->
     <section>
       <h1>API de Rick and Morty</h1>
       <div id="search-container">
         <input type="text" id="search-input" placeholder="Pesquise">
-        <span class="search-icon">&#128269;</span>
+        <span class="search-icon">&#9740;</span>
       </div>
     </section>
-    <!--imagens -->
 
+    <!--imagens -->
     <section>
       <div id="cards">
         <div id="characters"></div>
       </div>
     </section>
+
+    <section id="pagination">      
+      <div id="numberPages"></div>
+      <button onclick="previousPage()">Anterior</button>
+      <button onclick="nextPage()">Próximo</button>
+    </section>
+
+    <section>
+      <img id="rickAndMorty" src="./image/img1.png" alt="Ilustração Rick and Morty">
+    </section>
+
+    <footer>
+      <div id="footer">
+        <div id="information">
+        <p id="text">PERSONAGENS:<span id="total-characters"></span></p>
+        <p id="text">LOCALIZAÇÕES:<span id="total-locations"></span></p>
+        <p id="text">EPISÓDIOS:<span id="total-episode"></span></p>
+      </div>
+        <p id="identification">Desenvolvido por: <span id="className"> Andrea Noer </span> em 2023.</p>       
+      </div>
+      
+    </footer>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-
-    window.onload = function () {
+    
+      window.onload = function () {
       fetchCharacters(name);
-    }
+    };
 
-    const searchInput = window.document.getElementById('search-input');
+    const searchInput = document.getElementById('search-input');
 
-    const page = 1;
-
+    let page = 1;
+    let totalPages = 0;
 
     function fetchCharacters(name) {
-
       let charactersContainer = document.getElementById('characters');
       charactersContainer.innerHTML = "";
 
-      const url = `https://rickandmortyapi.com/api/character/?name=${name}`;
+      const url = `https://rickandmortyapi.com/api/character/?name=${name}&page=${page}`;
 
       axios
-        .get(url, { params: { page } })
+        .get(url)
         .then(response => {
           const characters = response.data.results;
-          console.log(characters)
+          console.log(characters);
 
           if (characters.length === 0) {
             charactersContainer.textContent = 'Nenhum personagem encontrado.';
           } else {
             characters.forEach((character, index) => {
 
-              const characterDiv = document.createElement('card');
-              characterDiv.classList.add('card-container');
+            const characterDiv = document.createElement('card');
+            characterDiv.classList.add('card-container');
 
-              const name = document.createElement('h3');
-              const image = document.createElement('img');
-              const status = document.createElement('status');
-              const species = document.createElement('species');
+            const name = document.createElement('h3');
+            const image = document.createElement('img');
+            const status = document.createElement('status');
+            const species = document.createElement('species');
 
-              // Inserindo propriedades
-              name.textContent = character.name;
-              image.src = character.image;
-              status.textContent = character.status;
-              species.textContent = character.species;
+            // Inserindo propriedades
+            name.textContent = character.name;
+            image.src = character.image;
+            status.textContent = `Status: ${character.status}`;
+            species.textContent = `Species: ${character.species}`;
 
-              // Criando as divs
-              const imageDiv = document.createElement('div');
-              const contentDiv = document.createElement('div');
-              contentDiv.classList.add('div-character');
+            // Criando as divs
+            const imageDiv = document.createElement('div');
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('div-character');
 
-              // Adicionando os elementos na estrutura correta
-              imageDiv.appendChild(image);
-              contentDiv.appendChild(name);
-              contentDiv.appendChild(status);
-              contentDiv.appendChild(species);
+            // Adicionando os elementos na estrutura correta
+            imageDiv.appendChild(image);
+            contentDiv.appendChild(name);
+            contentDiv.appendChild(status);
+            contentDiv.appendChild(species);
 
-              // Adicionando as divs na div principal
-              characterDiv.appendChild(imageDiv);
-              characterDiv.appendChild(contentDiv);
+            // Adicionando as divs na div principal
+            characterDiv.appendChild(imageDiv);
+            characterDiv.appendChild(contentDiv);
 
-              // Puxando a div principal para o container
-              charactersContainer.appendChild(characterDiv);
+            // Puxando a div principal para o container
+            charactersContainer.appendChild(characterDiv);
 
             });
           }
+
+          totalPages = Math.floor(response.data.info.pages);
+          addNumbersPages();
+
+          //informação rodapé
+          const totalCharacters = response.data.info.count;
+          document.getElementById("total-characters").innerHTML = totalCharacters;
         })
         .catch(error => {
           console.log(error);
@@ -99,8 +129,59 @@
 
     searchInput.addEventListener('input', () => {
       const searchValue = searchInput.value;
+      page = 1; // Resetar a página para 1 ao realizar uma nova pesquisa
       fetchCharacters(searchValue);
-    });    
+    });
+
+    function previousPage() {
+      if (page > 1) {
+        page--;
+        fetchCharacters(searchInput.value);
+      }
+    }
+
+    function nextPage() {
+      if (page < totalPages) {
+        page++;
+        fetchCharacters(searchInput.value);
+      }
+    }
+
+    function addNumbersPages() {
+      let containerPagination = document.getElementById("numberPages");
+      containerPagination.innerHTML = "";
+
+      for (let i = 1; i <= totalPages; i++) {
+        containerPagination.innerHTML += `<button onclick="alterNumberPage(${i})">${i}</button>`;
+      }
+    }   
+
+    //botão de número de paginas
+    function alterNumberPage(newNumberPage){
+      page = newNumberPage;
+      fetchCharacters(searchInput.value);
+    }
+
+    const rota = `https://rickandmortyapi.com/api/location`;
+
+    axios
+        .get(rota)
+        .then(response => {
+          //informação rodapé
+          const totalLocations = response.data.info.count;
+          document.getElementById("total-locations").innerHTML = totalLocations;
+        })
+
+    const address = `https://rickandmortyapi.com/api/episode`;
+
+    axios
+    .get(address)
+    .then(response => {
+      //informação rodapé
+      const totalEpisode = response.data.info.count;
+      document.getElementById("total-episode").innerHTML = totalEpisode;
+    })
+
   </script>
 </body>
 

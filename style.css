@@ -57,7 +57,9 @@ section {
 
 .search-icon {
   padding: 0 10px;
-  font-size: 20px;
+  font-size: 30px;
+  transform: rotate(100deg);
+  color: rgb(0, 100, 0);
 }
 #cards{
   margin-top: 50px;
@@ -89,7 +91,6 @@ card{
   width: 100px;
   height: 100px;
   object-fit: cover;
-
 }
 
 .card-container h3 {
@@ -104,4 +105,52 @@ card{
 }
 .div-character{
   display: grid;
+  justify-content: start;
+  justify-items: start;
+}
+h3{
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(0, 100, 0);
+}
+status{
+  font-family: Arial, Helvetica, sans-serif;
+}
+species{
+  font-family: Arial, Helvetica, sans-serif;
+}
+#rickAndMorty{
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+}
+#footer{
+  height: 400px;
+  background-color: rgb(37, 37, 37);
+}
+#information{
+  display: flex;
+  justify-content: center;
+}
+#text{
+  color: rgb(170, 170, 170);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  padding-left: 50px;
+  padding-top: 50px;
+}
+#identification{
+    text-align: center;
+    display: flex;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: rgb(170, 170, 170);
+    align-items: stretch;
+    justify-content: center;
+    margin-top: 250px;
+}
+#className{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: white;
 }
